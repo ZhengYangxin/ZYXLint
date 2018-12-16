@@ -12,7 +12,7 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                //dadasdasdsqqsadashjkjhk客户hhjhdasdakk
+                //dadasdasdsqdasdaqsadashjkjhk客户hhjhdasdakk
             }
         }).run();
     }

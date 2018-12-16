@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-//apply plugin: 'com.zyx.lint'
+apply plugin: 'com.zyx.lint'
 
 android {
     compileSdkVersion 26
@@ -31,6 +31,6 @@ dependencies {
     compile project(':ZYXLintAAR')
 }
 
-//ZYXLint{
-//    checkCommit = true
-//}
+ZYXLint{
+    checkCommit = true
+}
