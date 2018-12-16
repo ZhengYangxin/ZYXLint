@@ -17,7 +17,7 @@ fi
 
 SCRIPT_DIR=$(dirname "$0")
 SCRIPT_ABS_PATH=`cd "$SCRIPT_DIR"; pwd`
-$SCRIPT_ABS_PATH/../../gradlew  -PcheckCommit="true" ZYXCodeScanTaskDebug
+$SCRIPT_ABS_PATH/../../gradlew  ZYXCodeScanTaskDebug
 if [ $? -eq 0   ]; then
     echo "lint OK"
 else
