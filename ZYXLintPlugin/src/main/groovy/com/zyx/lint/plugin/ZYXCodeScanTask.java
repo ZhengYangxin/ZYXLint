@@ -2,19 +2,12 @@ package com.zyx.lint.plugin;
 
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
-import com.android.build.gradle.AppExtension;
-import com.android.build.gradle.LibraryExtension;
-import com.android.build.gradle.api.ApplicationVariant;
-import com.android.build.gradle.api.LibraryVariant;
 import com.android.build.gradle.internal.LintGradleClient;
-import com.android.build.gradle.internal.api.ApplicationVariantImpl;
-import com.android.build.gradle.internal.api.LibraryVariantImpl;
 import com.android.build.gradle.internal.dsl.LintOptions;
 import com.android.build.gradle.internal.scope.GlobalScope;
 import com.android.build.gradle.internal.scope.TaskConfigAction;
 import com.android.build.gradle.internal.scope.VariantScope;
-import com.android.build.gradle.internal.variant.ApplicationVariantData;
-import com.android.build.gradle.internal.variant.LibraryVariantData;
+import com.android.build.gradle.tasks.GroovyGradleDetector;
 import com.android.build.gradle.tasks.Lint;
 import com.android.builder.model.AndroidProject;
 import com.android.builder.model.Variant;
@@ -22,11 +15,14 @@ import com.android.tools.lint.LintCliFlags;
 import com.android.tools.lint.Reporter;
 import com.android.tools.lint.Warning;
 import com.android.tools.lint.checks.BuiltinIssueRegistry;
+import com.android.tools.lint.checks.GradleDetector;
 import com.android.tools.lint.client.api.IssueRegistry;
 import com.android.tools.lint.client.api.LintBaseline;
+import com.android.tools.lint.detector.api.Implementation;
+import com.android.tools.lint.detector.api.Issue;
+import com.android.tools.lint.detector.api.Scope;
 import com.android.utils.Pair;
 
-import org.gradle.api.DomainObjectSet;
 import org.gradle.api.GradleException;
 import org.gradle.api.Project;
 import org.gradle.tooling.provider.model.ToolingModelBuilder;
@@ -206,8 +202,7 @@ class ZYXCodeScanTask extends Lint {
         throw new GradleException(message);
     }
 
-
-   /* private static class LintGradleIssueRegistry extends BuiltinIssueRegistry {
+    private static class LintGradleIssueRegistry extends BuiltinIssueRegistry {
         private boolean mInitialized;
 
         public LintGradleIssueRegistry() {}
@@ -232,49 +227,6 @@ class ZYXCodeScanTask extends Lint {
     static final Implementation IMPLEMENTATION = new Implementation(
             GroovyGradleDetector.class,
             Scope.GRADLE_SCOPE);
-*/
-
-    private VariantScope getScope() {
-        Project project = getProject();
-        Object baseExtension = project.getExtensions().getByName("android");
-        if (baseExtension instanceof AppExtension) {
-            AppExtension extension = (AppExtension) baseExtension;
-            DomainObjectSet<ApplicationVariant> variants = extension.getApplicationVariants();
-
-            for (ApplicationVariant it : variants) {
-                if (it instanceof ApplicationVariantImpl) {
-                    ApplicationVariantImpl variantImpl = (ApplicationVariantImpl) it;
-                    ApplicationVariantData applicationVariantData = (ApplicationVariantData) ReflectionExtUtil.getFieldValue(variantImpl, "variantData");
-                    VariantScope globalScope = applicationVariantData.getScope();
-                    if (globalScope != null) {
-                        return globalScope;
-                    }
-                }
-            }
-        } else if (baseExtension instanceof LibraryExtension) {
-            // 说明这个是library
-            LibraryExtension extension = (LibraryExtension) baseExtension;
-            DomainObjectSet<LibraryVariant> variants = extension.getLibraryVariants();
-
-            for (LibraryVariant it : variants) {
-                if (it instanceof LibraryVariantImpl) {
-                    LibraryVariantImpl variantImpl = (LibraryVariantImpl) it;
-                    LibraryVariantData baseVariantData = (LibraryVariantData) ReflectionExtUtil.getFieldValue(variantImpl, "variantData");
-//                    def globalScope = getVariantDataByLibrary(variantImpl)
-                    VariantScope globalScope = baseVariantData.getScope();
-                    if (globalScope != null) {
-                      return globalScope;
-                  }
-                }
-            }
-
-        }
-        return null;
-    }
-
-    GlobalScope getGlobalScope() {
-        return getScope().getGlobalScope();
-    }
 
     public static class VitalConfigAction implements TaskConfigAction<ZYXCodeScanTask> {
 
