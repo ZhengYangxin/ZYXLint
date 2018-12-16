@@ -17,12 +17,12 @@ android {
         }
     }
 
-//    lintOptions {
-//        abortOnError false
-//        htmlReport true
-//        htmlOutput new File(project.getBuildDir(), "dfireLint.html")
-//        xmlReport false
-//    }
+    lintOptions {
+        abortOnError false
+        htmlReport true
+        htmlOutput new File(project.getBuildDir(), "dfireLint.html")
+        xmlReport false
+    }
 
 
 }
@@ -36,4 +36,3 @@ dependencies {
     compile project(':ZYXLintAAR')
 //    implementation project(':ZYXLintRules')
 }
-

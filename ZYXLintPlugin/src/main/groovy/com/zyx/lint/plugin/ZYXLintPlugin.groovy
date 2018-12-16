@@ -1,31 +1,40 @@
 package com.zyx.lint.plugin
 
-import com.android.build.gradle.AppPlugin
-import com.android.build.gradle.LibraryPlugin
+import com.android.build.gradle.*
+import com.android.build.gradle.api.ApplicationVariant
 import com.android.build.gradle.api.BaseVariant
+import com.android.build.gradle.api.LibraryVariant
+import com.android.build.gradle.internal.api.ApplicationVariantImpl
+import com.android.build.gradle.internal.api.LibraryVariantImpl
 import com.android.build.gradle.internal.dsl.LintOptions
-import com.android.build.gradle.internal.scope.VariantScope
 import com.android.build.gradle.tasks.Lint
 import org.gradle.api.*
 import org.gradle.api.tasks.TaskState
+import org.gradle.internal.reflect.Instantiator
+import org.gradle.tooling.provider.model.ToolingModelBuilderRegistry
 
+import javax.inject.Inject
 /**
  * desc :
  * time  : 16/12/18.
  * author : pielan
  */
 
-class ZYXLintPlugin implements Plugin<Project>{
+class ZYXLintPlugin extends TestPlugin {
     ZYXLintExtension zyxLintExtension
-
-    static String LINTFORZYX = "lintForZYX"
-
     static String CONFIG_LINT_PATH = "/config/lint.xml"
     static String CONFIG_GIT_COMMIT_PATH = "/config/post-commit"
+
+    @Inject
+    ZYXLintPlugin(Instantiator instantiator, ToolingModelBuilderRegistry registry) {
+        super(instantiator, registry);
+    }
+
     @Override
     void apply(Project project) {
         zyxLintExtension = project.extensions.create("ZYXLint", ZYXLintExtension)
         applyTask(project, getAndroidVariants(project))
+        createTask(project)
         createGitHooksTask(project)
     }
 
@@ -39,6 +48,7 @@ class ZYXLintPlugin implements Plugin<Project>{
     private static DomainObjectCollection<BaseVariant> getAndroidVariants(Project project) {
 
         if (project.getPlugins().hasPlugin(AppPlugin)) {
+
             return project.getPlugins().getPlugin(AppPlugin).extension.applicationVariants
         }
 
@@ -136,10 +146,39 @@ class ZYXLintPlugin implements Plugin<Project>{
             if (!lintTaskExists) {
                 lintTaskExists = true
                 //创建一个task 名为  LintForZYX
-                project.getTasks().create(LINTFORZYX, ZYXCodeScanTask.class)
+
+//                project.getTasks().create(LINTFORZYX, ZYXCodeScanTask.class)
 //                project.task(LINTFORZYX).dependsOn lintTask
             }
             //==========================  在终端 执行命令 gradlew LintForZYX  的配置  结束=============================================//
+        }
+    }
+
+    void createTask(Project project) {
+        def baseExtension = project.extensions.getByName("android")
+        if (baseExtension instanceof AppExtension) {
+            AppExtension extension = (AppExtension) baseExtension
+            DomainObjectSet<ApplicationVariant> variants = extension.getApplicationVariants()
+            variants.all {
+                System.out.println(project.getName() + "==== application ====")
+                if (it instanceof ApplicationVariantImpl) {
+                    ApplicationVariantImpl variantImpl = (ApplicationVariantImpl) it
+                    def globalScope = variantImpl.variantData.scope
+                    project.getTasks().create(globalScope.getTaskName(ZYXCodeScanTask.NAME), ZYXCodeScanTask.class, new ZYXCodeScanTask.VitalConfigAction(globalScope, getProject()))
+                }
+            }
+        } else if (baseExtension instanceof LibraryExtension) {
+            // 说明这个是library
+            System.out.println(project.getName() + "==== Library ====")
+            LibraryExtension extension = (LibraryExtension) baseExtension
+            DomainObjectSet<LibraryVariant> variants = extension.getLibraryVariants()
+            variants.all {
+                if (it instanceof LibraryVariantImpl) {
+                    LibraryVariantImpl variantImpl = (LibraryVariantImpl) it
+                    def globalScope = getVariantDataByLibrary(variantImpl)
+                    project.getTasks().create(globalScope.scope.getTaskName(ZYXCodeScanTask.NAME), ZYXCodeScanTask.class, new ZYXCodeScanTask.VitalConfigAction(globalScope.scope, getProject()))
+                }
+            }
         }
     }
 
