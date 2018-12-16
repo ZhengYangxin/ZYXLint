@@ -27,6 +27,7 @@ class ZYXCodeScanClient extends LintGradleClient {
 
     @Override
     protected LintRequest createLintRequest(List<File> files) {
+        System.out.println("==== files ====")
         LintRequest lintRequest = super.createLintRequest(files)
         addChangeFile(lintRequest)
         return lintRequest
