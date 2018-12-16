@@ -15,7 +15,6 @@ import com.android.build.gradle.internal.scope.TaskConfigAction;
 import com.android.build.gradle.internal.scope.VariantScope;
 import com.android.build.gradle.internal.variant.ApplicationVariantData;
 import com.android.build.gradle.internal.variant.LibraryVariantData;
-import com.android.build.gradle.tasks.GroovyGradleDetector;
 import com.android.build.gradle.tasks.Lint;
 import com.android.builder.model.AndroidProject;
 import com.android.builder.model.Variant;
@@ -23,12 +22,8 @@ import com.android.tools.lint.LintCliFlags;
 import com.android.tools.lint.Reporter;
 import com.android.tools.lint.Warning;
 import com.android.tools.lint.checks.BuiltinIssueRegistry;
-import com.android.tools.lint.checks.GradleDetector;
 import com.android.tools.lint.client.api.IssueRegistry;
 import com.android.tools.lint.client.api.LintBaseline;
-import com.android.tools.lint.detector.api.Implementation;
-import com.android.tools.lint.detector.api.Issue;
-import com.android.tools.lint.detector.api.Scope;
 import com.android.utils.Pair;
 
 import org.gradle.api.DomainObjectSet;
@@ -212,7 +207,7 @@ class ZYXCodeScanTask extends Lint {
     }
 
 
-    private static class LintGradleIssueRegistry extends BuiltinIssueRegistry {
+   /* private static class LintGradleIssueRegistry extends BuiltinIssueRegistry {
         private boolean mInitialized;
 
         public LintGradleIssueRegistry() {}
@@ -237,7 +232,7 @@ class ZYXCodeScanTask extends Lint {
     static final Implementation IMPLEMENTATION = new Implementation(
             GroovyGradleDetector.class,
             Scope.GRADLE_SCOPE);
-
+*/
 
     private VariantScope getScope() {
         Project project = getProject();

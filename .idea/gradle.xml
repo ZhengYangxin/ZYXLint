@@ -12,6 +12,7 @@
             <option value="$PROJECT_DIR$/ZYXLintPlugin" />
             <option value="$PROJECT_DIR$/ZYXLintRules" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/librarytest" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

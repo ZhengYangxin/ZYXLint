@@ -7,6 +7,7 @@ import com.android.build.gradle.api.LibraryVariant
 import com.android.build.gradle.internal.api.ApplicationVariantImpl
 import com.android.build.gradle.internal.api.LibraryVariantImpl
 import com.android.build.gradle.internal.dsl.LintOptions
+import com.android.build.gradle.internal.variant.LibraryVariantData
 import com.android.build.gradle.tasks.Lint
 import org.gradle.api.*
 import org.gradle.api.tasks.TaskState
@@ -14,6 +15,8 @@ import org.gradle.internal.reflect.Instantiator
 import org.gradle.tooling.provider.model.ToolingModelBuilderRegistry
 
 import javax.inject.Inject
+import java.lang.reflect.Field
+
 /**
  * desc :
  * time  : 16/12/18.
@@ -251,5 +254,19 @@ class ZYXLintPlugin extends TestPlugin {
             }
         }
 
+    }
+
+    /**
+     * LibraryVariantImpl 中没有对外暴露接口，和Application中不一致，先用反射搞定
+     * @param variant
+     * @return
+     */
+    static LibraryVariantData getVariantDataByLibrary(LibraryVariantImpl variant) {
+        Class<LibraryVariantImpl> libraryVariantClass =
+                Class.forName("com.android.build.gradle.internal.api.LibraryVariantImpl")
+
+        Field field = libraryVariantClass.getDeclaredField("variantData")
+        field.setAccessible(true)
+        return field.get(variant)
     }
 }
