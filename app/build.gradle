@@ -1,0 +1,39 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.zyx.lint'
+android {
+    compileSdkVersion 26
+    buildToolsVersion '26.0.2'
+    defaultConfig {
+        applicationId "com.zyx.app.zyxlint"
+        minSdkVersion 15
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+//    lintOptions {
+//        abortOnError false
+//        htmlReport true
+//        htmlOutput new File(project.getBuildDir(), "dfireLint.html")
+//        xmlReport false
+//    }
+
+
+}
+
+ZYXLint{
+    checkCommit = true
+}
+
+dependencies {
+    compile 'com.android.support:appcompat-v7:26.1.0'
+    compile project(':ZYXLintAAR')
+//    implementation project(':ZYXLintRules')
+}
+
