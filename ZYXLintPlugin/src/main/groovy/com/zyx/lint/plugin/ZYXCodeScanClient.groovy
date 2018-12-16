@@ -55,9 +55,11 @@ class ZYXCodeScanClient extends LintGradleClient {
 
     private addChangeFile(LintRequest lintRequest) {
         List<String> commitChanges = getPostCommitChange()
-        for (String commitChange : commitChanges) {
-            for (Project project : lintRequest.getProjects()) {
-                project.addFile(new File(commitChange))//加入要扫描的文件
+        if (!commitChanges == null || !commitChanges.isEmpty()) {
+            for (String commitChange : commitChanges) {
+                for (Project project : lintRequest.getProjects()) {
+                    project.addFile(new File(commitChange))//加入要扫描的文件
+                }
             }
         }
     }

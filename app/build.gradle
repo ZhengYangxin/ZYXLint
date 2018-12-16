@@ -16,13 +16,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-/*
     lintOptions {
         abortOnError false
-        htmlReport true
-        htmlOutput new File(project.getBuildDir(), "dfireLint.html")
-        xmlReport false
-    }*/
+    }
 
 
 }
