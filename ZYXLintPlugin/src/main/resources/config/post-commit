@@ -1,4 +1,0 @@
-#!/bin/sh
-echo "post commit and gradlew lint"
-start ./gradlew  ZYXCodeScanTaskDebug
-exit

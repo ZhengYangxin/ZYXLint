@@ -23,7 +23,7 @@ import javax.inject.Inject
 class ZYXLintPlugin extends TestPlugin {
     ZYXLintExtension zyxLintExtension
     static String CONFIG_LINT_PATH = "/config/lint.xml"
-    static String CONFIG_GIT_COMMIT_PATH = "/config/post-commit"
+    static String CONFIG_GIT_COMMIT_PATH = "/config/pre-commit"
 
     @Inject
     ZYXLintPlugin(Instantiator instantiator, ToolingModelBuilderRegistry registry) {
@@ -218,7 +218,7 @@ class ZYXLintPlugin extends TestPlugin {
         }
 
         def installGitHooks = project.getTasks().create("installGitHooks") .doLast {
-            def PATH_POST_COMMIT = ".git/hooks/post-commit"
+            def PATH_POST_COMMIT = ".git/hooks/pre-commit"
             File postCommitFile = new File(project.rootProject.rootDir, PATH_POST_COMMIT)
             if (zyxLintExtension.checkCommit) {
                 FileUtils.copyResourceFile(CONFIG_GIT_COMMIT_PATH, postCommitFile)
